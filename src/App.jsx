@@ -24,7 +24,21 @@ const App = () => {
     };
   }, []);
 
-  const handleStartMeditation = () => {
+  const setMode = async (mode) => {
+    try {
+      await fetch("/api/set-mode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode }),
+      });
+    } catch (error) {
+      console.error("Could not set mode:", error);
+    }
+  };
+
+  const handleStartMeditation = async () => {
+    await setMode("latest");
+
     const startTime = Date.now();
 
     setCurrentSession({
@@ -114,16 +128,16 @@ const App = () => {
     setCurrentScreen("results");
   };
 
-const handleNewSession = async () => {
-  await fetch("/api/set-mode", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ mode: "latest" }),
-  });
+  const handleViewHistory = async () => {
+    await setMode("history");
+    setCurrentScreen("history");
+  };
 
-  setCurrentSession(null);
-  setCurrentScreen("start");
-};
+  const handleNewSession = async () => {
+    await setMode("latest");
+    setCurrentSession(null);
+    setCurrentScreen("start");
+  };
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-4xl flex-col px-4 py-8 md:px-8">
@@ -144,14 +158,9 @@ const handleNewSession = async () => {
           selectedDuration={selectedDuration}
           onDurationChange={setSelectedDuration}
           onStart={handleStartMeditation}
-          onViewHistory={async () => {
-  await fetch("/api/set-mode", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ mode: "history" }),
-  });
-  setCurrentScreen("history");
-}}
+          onViewHistory={handleViewHistory}
+        />
+      )}
 
       {currentScreen === "meditation" && (
         <MeditationScreen
@@ -168,7 +177,7 @@ const handleNewSession = async () => {
         <ResultsScreen
           sessionData={currentSession}
           onNewSession={handleNewSession}
-          onHistory={() => setCurrentScreen("history")}
+          onHistory={handleViewHistory}
         />
       )}
 
