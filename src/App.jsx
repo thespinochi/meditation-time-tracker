@@ -16,6 +16,7 @@ const App = () => {
 
   useEffect(() => {
     setSessions(loadSessions());
+    setMode("idle");
   }, []);
 
   useEffect(() => {
@@ -37,7 +38,7 @@ const App = () => {
   };
 
   const handleStartMeditation = async () => {
-    await setMode("latest");
+    await setMode("idle");
 
     const startTime = Date.now();
 
@@ -119,6 +120,8 @@ const App = () => {
           estimatedTime: userPerceivedMinutes * 60,
         }),
       });
+
+      await setMode("latest");
     } catch (error) {
       console.error("Could not send result to API:", error);
     }
@@ -134,7 +137,7 @@ const App = () => {
   };
 
   const handleNewSession = async () => {
-    await setMode("latest");
+    await setMode("idle");
     setCurrentSession(null);
     setCurrentScreen("start");
   };
