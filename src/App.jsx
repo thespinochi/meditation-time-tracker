@@ -95,7 +95,7 @@ const App = () => {
     };
 
     try {
-      await fetch("/api/save-result", {
+      await fetch("/api/save-results", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
