@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
   const { mode } = req.body;
 
-  if (mode !== "latest" && mode !== "history") {
+  if (mode !== "idle" && mode !== "latest" && mode !== "history") {
     return res.status(400).json({ error: "Invalid mode" });
   }
 
