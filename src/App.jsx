@@ -114,10 +114,16 @@ const App = () => {
     setCurrentScreen("results");
   };
 
-  const handleNewSession = () => {
-    setCurrentSession(null);
-    setCurrentScreen("start");
-  };
+const handleNewSession = async () => {
+  await fetch("/api/set-mode", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mode: "latest" }),
+  });
+
+  setCurrentSession(null);
+  setCurrentScreen("start");
+};
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-4xl flex-col px-4 py-8 md:px-8">
@@ -138,9 +144,14 @@ const App = () => {
           selectedDuration={selectedDuration}
           onDurationChange={setSelectedDuration}
           onStart={handleStartMeditation}
-          onViewHistory={() => setCurrentScreen("history")}
-        />
-      )}
+          onViewHistory={async () => {
+  await fetch("/api/set-mode", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mode: "history" }),
+  });
+  setCurrentScreen("history");
+}}
 
       {currentScreen === "meditation" && (
         <MeditationScreen
